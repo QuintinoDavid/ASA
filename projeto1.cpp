@@ -5,19 +5,20 @@ Projeto 1 de Análise e Sintese de Algoritmos
     - David Costa Quintino ist1107095
 */
 #include <iostream>
+#include <list>
 #include <vector>
 
 int calculateprice(int x, int y, std::vector<std::vector<int>> pieces, std::vector<int> price){
-    std::vector<int> lines(x+1);
-    std::vector<std::vector<int>> subpiece_max(y+1,lines);
+    std::vector<int> lines(y+1);
+    std::vector<std::vector<int>> subpiece_max(x+1,lines);
 
-    if(x<y){
+    if(y<x){
        int temp= y;
        y=x;
        x=temp; 
     }
 
-    for(int i=0; i<=x;i++){
+    for(int i=0; i<=y;i++){
         subpiece_max[0][i]=0;
     }
 
@@ -26,6 +27,7 @@ int calculateprice(int x, int y, std::vector<std::vector<int>> pieces, std::vect
 
         }
     }
+    return subpiece_max[x][y];
 }
 
 int main(){
