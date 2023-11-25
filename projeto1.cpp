@@ -15,6 +15,7 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
        y=x;
        x=temp; 
     }
+
     std::vector<int> lines(y+1);
     std::vector<std::vector<int>> subpiece_max(x+1,lines);
 
@@ -22,38 +23,42 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
         subpiece_max[0][i]=0;
     }
 
-    for(int i=1; i<=x; i++){
-        for(int j=i;i<=y;j++){
+    for(double i=1; i<=x; i++){
+        for(double j=i;j<=y;j++){
             //ver as peças e ver se alguma encaixa na tabela e apaga-a
             int cur_max=0;
             if(!pieces.empty()){
-                for(std::list<std::vector<int>>::iterator it= pieces.begin();it !=pieces.end(); it++){
-                    if( ((*it)[0]==j&&(*it)[1]==i) || ((*it)[1]==j&&(*it)[0]==i) ){
+                for(std::list<std::vector<int>>::iterator it= pieces.begin();it !=pieces.end();){
+                    if(((*it)[0]==j&&(*it)[1]==i) || ((*it)[1]==j&&(*it)[0]==i) ){
                         if((*it)[2]>cur_max){ // peças tamanho igual valor !=
                             cur_max= (*it)[2];
                         }
-                        pieces.erase(it);
+                        it = pieces.erase(it);
+                    } else {
+                        it++;
                     }
                 }
             }
             
+            
             //ver combinations das peças
             //1 vertical, 1 horizontal, iterar até floor da metade
             //if valor n ta na tabela, buscar o simetrico
-            for(int a=j-1; a>=i; a--){
-                if(int val=subpiece_max[i][a]+subpiece_max[i][j-i] > cur_max){ 
-                        cur_max= val;
+            // VALOR DA PROPRIO COISO
+            for(double a=i-1; a>=ceil(i/2); a--){
+                if(int val=subpiece_max[a][j]+subpiece_max[i-a][j] > cur_max){
+                    cur_max= val;
                 }
-            } // VALOR DA PROPRIO COISO
+            } 
 
             if(i!=j) {//se não for quadrado
-                for(double b=i-1; b>=j; b--){
-                    if(int val=subpiece_max[j][b]+subpiece_max[j][i-b] > cur_max){
+                for(double a=j-1; a>=ceil(j/2); a--){
+                    if(int val=subpiece_max[a][i]+subpiece_max[j-a][i] > cur_max){ 
                         cur_max= val;
                     }
-                }    
+                } 
             }
-        subpiece_max[x][y]= cur_max;   
+            subpiece_max[i][j]= cur_max;   
         }
     }
     return subpiece_max[x][y];
