@@ -16,6 +16,7 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
        x=temp; 
     }
 
+    //criacao da tabela
     std::vector<int> lines(y+1);
     std::vector<std::vector<int>> subpiece_max(x+1,lines);
 
@@ -29,7 +30,9 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
             int cur_max=0;
             if(!pieces.empty()){
                 for(std::list<std::vector<int>>::iterator it= pieces.begin();it !=pieces.end();){
-                    if(((*it)[0]==j&&(*it)[1]==i) || ((*it)[1]==j&&(*it)[0]==i) ){
+
+                    if(((*it)[0]==j && (*it)[1]==i) || ((*it)[1]==j && (*it)[0]==i) ){ //caso a peça tenha as dimensões da tabela atual
+                        
                         if((*it)[2]>cur_max){ // peças tamanho igual valor !=
                             cur_max= (*it)[2];
                         }
@@ -41,10 +44,8 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
             }
             
             
-            //ver combinations das peças
-            //1 vertical, 1 horizontal, iterar até floor da metade
-            //if valor n ta na tabela, buscar o simetrico
-            // VALOR DA PROPRIO COISO
+            //ver combinaçoes das peças
+            //iterar desde o fim até o ceilling da metade, dividindo a placa verticalmente
             for(double a=i-1; a>=ceil(i/2); a--){
                 if(int val=subpiece_max[a][j]+subpiece_max[i-a][j] > cur_max){
                     cur_max= val;
@@ -52,8 +53,9 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
             } 
 
             if(i!=j) {//se não for quadrado
+                //fazer o mesmo que há pouco mas agore horizontalmente
                 for(double a=j-1; a>=ceil(j/2); a--){
-                    if(int val=subpiece_max[a][i]+subpiece_max[j-a][i] > cur_max){ 
+                    if(int val=subpiece_max[i][a]+subpiece_max[i][j-a] > cur_max){ 
                         cur_max= val;
                     }
                 } 
