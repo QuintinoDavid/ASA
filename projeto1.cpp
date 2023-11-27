@@ -30,16 +30,16 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
             int val= 0, cur_max=0;
 
             if(!pieces.empty()){
-                for(std::list<std::vector<int>>::iterator it= pieces.begin();it !=pieces.end();){
-
-                    if(((*it)[0]==j && (*it)[1]==i) || ((*it)[1]==j && (*it)[0]==i) ){ //caso a peça tenha as dimensões da tabela atual
-                        
+                std::list<std::vector<int>>::iterator it= pieces.begin();
+                while(it== pieces.begin() && !pieces.empty()) {
+                    if(((*it)[0]==i && (*it)[1]==j)){ //caso a peça tenha as dimensões da tabela atual
                         if((*it)[2]>cur_max){ // peças tamanho igual valor !=
                             cur_max= (*it)[2];
                         }
-                        it = pieces.erase(it);
-                    } else {
                         it++;
+                        pieces.pop_front();
+                    } else{
+                        break;
                     }
                 }
             }
@@ -70,7 +70,7 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
                         cur_max= val;
                 } 
             }
-            subpiece_max[i][j]= cur_max;   
+            subpiece_max[i][j]= cur_max;    
         }
     }
     return subpiece_max[x][y];
@@ -78,22 +78,27 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
 
 int main(){
     unsigned int x,y,n;
-    std::cin>>x>>y;
-    std::cin>>n;
+    scanf("%d%d",&x,&y);
+    scanf("%d",&n);
 
     
     std::list<std::vector<int>> pieces;
 
     while(n>0){
         int x1, y1, price1;
-        std::cin>>x1>>y1>>price1;
+        scanf("%d%d%d",&x1,&y1,&price1);
+        if(y1<x1){
+            int temp= y1;
+            y1=x1;
+            x1= temp;
+        }
         std::vector<int> piece {x1,y1,price1};
         pieces.push_back(piece);
+        //adicionar sort
         n--;
     }
-
+    pieces.sort();
     int max_price = calculateprice(x,y,pieces);
     std::cout<<max_price<<std::endl;
-    
     return 0;
 }
