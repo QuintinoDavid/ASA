@@ -10,44 +10,32 @@ Projeto 1 de Análise e Sintese de Algoritmos
 #include <cmath>
 
 int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
-    if(y<x){
-       int temp= y;
-       y=x;
-       x=temp; 
-    }
+    int val, cur_max;
+    if(y==0||x==0||pieces.empty())
+        return 0;
 
     //criacao da tabela
     std::vector<int> lines(y+1);
     std::vector<std::vector<int>> subpiece_max(x+1,lines);
+    int i,j,a,min;
+    for(i=1; i<=x; i++){
+        for(j=i; j<=y; j++){
+            val= 0, cur_max=0;
 
-    for(int i=0; i<=y; i++){
-        subpiece_max[0][i]=0;
-    }
-
-    for(double i=1; i<=x; i++){
-        for(double j=i;j<=y;j++){
             //ver as peças e ver se alguma encaixa na tabela e apaga-a
-            int val= 0, cur_max=0;
-
-            if(!pieces.empty()){
-                std::list<std::vector<int>>::iterator it= pieces.begin();
-                while(it== pieces.begin() && !pieces.empty()) {
-                    if(((*it)[0]==i && (*it)[1]==j)){ //caso a peça tenha as dimensões da tabela atual
-                        if((*it)[2]>cur_max){ // peças tamanho igual valor !=
-                            cur_max= (*it)[2];
-                        }
-                        it++;
-                        pieces.pop_front();
-                    } else{
-                        break;
-                    }
-                }
+            std::list<std::vector<int>>::iterator it= pieces.begin();
+            while(!pieces.empty() && (*it)[0]==i && (*it)[1]==j){ //caso a peça tenha as dimensões da tabela atual
+                if((*it)[2]>cur_max) // peças tamanho igual valor !=
+                    cur_max= (*it)[2];
+                it++;
+                pieces.pop_front();
             }
             
             
             //ver combinaçoes das peças
             //iterar desde o fim até o ceilling da metade, dividindo a placa verticalmente
-            for(int a=i-1; ceil(i/2)<=a; a--){
+            min = (i+1)>>1;
+            for(a=i-1; a>=min; a--){
                 val=subpiece_max[a][j] + subpiece_max[i-a][j];
                 if(cur_max<val)
                     cur_max= val;
@@ -55,17 +43,16 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
 
             if(i!=j) {//se não for quadrado
                 //fazer o mesmo que há pouco mas agora horizontalmente
-                for(int a=j-1; ceil(j/2)<=a; a--){
-                    if(j-a<=i){//verificar se o primeiro valor é menor que o segundo
+                min = (j+1)>>1;
+                for(a = j-1; a >= min; a--){
+                    if(j-a <= i) //verificar se o primeiro valor é menor que o segundo
                         val = subpiece_max[j-a][i];
-                    }else{
+                    else
                         val = subpiece_max[i][j-a];
-                    }
-                    if(a<=i){
+                    if(a <= i)
                         val += subpiece_max[a][i];
-                    }else{
+                    else
                         val += subpiece_max[i][a];
-                    }
                     if(cur_max < val)
                         cur_max= val;
                 } 
@@ -77,28 +64,34 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
 }
 
 int main(){
-    unsigned int x,y,n;
+    int x,y,n;
+    int x1, y1, price1;
+    std::list<std::vector<int>> pieces;
+
     scanf("%d%d",&x,&y);
     scanf("%d",&n);
 
+    if(y<x){//por convenção fazemos o x sempre menor ou igual que o y
+        int temp= y;
+        y=x;
+        x=temp; 
+    }
     
-    std::list<std::vector<int>> pieces;
-
     while(n>0){
-        int x1, y1, price1;
         scanf("%d%d%d",&x1,&y1,&price1);
-        if(y1<x1){
+        if(y1<x1){ //x menor que y por convencao
             int temp= y1;
             y1=x1;
             x1= temp;
         }
-        std::vector<int> piece {x1,y1,price1};
-        pieces.push_back(piece);
-        //adicionar sort
+        if(x1<=x && y1<=y){
+            std::vector<int> piece {x1,y1,price1};
+            pieces.push_back(piece);
+        }
         n--;
     }
+
     pieces.sort();
-    int max_price = calculateprice(x,y,pieces);
-    std::cout<<max_price<<std::endl;
+    std::cout<<calculateprice(x,y,pieces)<<std::endl;
     return 0;
 }
