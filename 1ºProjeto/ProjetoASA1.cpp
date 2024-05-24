@@ -17,9 +17,9 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
     //criacao da tabela
     std::vector<int> lines(y+1);
     std::vector<std::vector<int>> subpiece_max(x+1,lines);
-    int i,j,a,min;
+    int i,j, a, min;
     for(i=1; i<=x; i++){
-        for(j=i; j<=y; j++){
+        for(j=i;j<=y;j++){
             val= 0, cur_max=0;
 
             //ver as peças e ver se alguma encaixa na tabela e apaga-a
@@ -44,12 +44,12 @@ int calculateprice(int x, int y, std::list<std::vector<int>> pieces){
             if(i!=j) {//se não for quadrado
                 //fazer o mesmo que há pouco mas agora horizontalmente
                 min = (j+1)>>1;
-                for(a = j-1; a >= min; a--){
-                    if(j-a <= i) //verificar se o primeiro valor é menor que o segundo
+                for(a=j-1; a>=min; a--){
+                    if(j-a<=i) //verificar se o primeiro valor é menor que o segundo
                         val = subpiece_max[j-a][i];
                     else
                         val = subpiece_max[i][j-a];
-                    if(a <= i)
+                    if(a<=i)
                         val += subpiece_max[a][i];
                     else
                         val += subpiece_max[i][a];
